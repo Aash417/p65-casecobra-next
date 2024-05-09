@@ -1,6 +1,7 @@
+import { db } from '@/db';
+import sharp from 'sharp';
 import { createUploadthing, type FileRouter } from 'uploadthing/next';
 import { z } from 'zod';
-
 const f = createUploadthing();
 
 // FileRouter for your app, can contain multiple FileRoutes
@@ -18,7 +19,33 @@ export const ourFileRouter = {
 			// This code RUNS ON YOUR SERVER after upload
 			const { configId } = metadata.input;
 			// !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
-			return { configId };
+
+			const res = await fetch(file.url);
+			const buffer = await res.arrayBuffer();
+			const imgMetadata = await sharp(buffer).metadata();
+			const { width, height } = imgMetadata;
+
+			if (!configId) {
+				const configuration = await db.configuration.create({
+					data: {
+						imgUrl: file.url,
+						height: height || 500,
+						width: width || 500,
+					},
+				});
+				return { configId: configuration.id };
+			} else {
+				const updatedConfiguration = await db.configuration.update({
+					where: {
+						id: configId,
+					},
+					data: {
+						croppedImageUrl: file.url,
+					},
+				});
+
+				return { configId: updatedConfiguration.id };
+			}
 		}),
 } satisfies FileRouter;
 
