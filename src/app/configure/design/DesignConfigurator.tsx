@@ -49,7 +49,7 @@ export default function DesignConfigurator({
 			});
 		},
 		onSuccess: () => {
-			router.push(`/configure/perview?id=${configId}`);
+			router.push(`/configure/preview?id=${configId}`);
 		},
 	});
 	const router = useRouter();
