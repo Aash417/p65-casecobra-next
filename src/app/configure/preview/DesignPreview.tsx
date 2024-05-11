@@ -2,15 +2,20 @@
 
 import Phone from '@/components/Phone';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/components/ui/use-toast';
 import { BASE_PRICE, PRODUCT_PRICES } from '@/config/product';
 import { cn, formatPrice } from '@/lib/utils';
 import { COLORS, MODELS } from '@/validators/option-validator';
 import { Configuration } from '@prisma/client';
+import { useMutation } from '@tanstack/react-query';
 import { ArrowRight, Check } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Confetti from 'react-dom-confetti';
+import { createCheckoutSession } from './action';
 
 export default function DesignPreview({ configuration }: { configuration: Configuration }) {
+	const router = useRouter();
 	const [showConfetti, setShowConfetti] = useState(false);
 	useEffect(() => setShowConfetti(true), []);
 
@@ -21,6 +26,22 @@ export default function DesignPreview({ configuration }: { configuration: Config
 	let totalPrice = BASE_PRICE;
 	if (material === 'polycarbonate') totalPrice += PRODUCT_PRICES.material.polycarbonate;
 	if (finish === 'textured') totalPrice += PRODUCT_PRICES.finish.textured;
+
+	const { mutate: createPaymentSession } = useMutation({
+		mutationKey: ['get-checkout-session'],
+		mutationFn: createCheckoutSession,
+		onSuccess: ({ url }) => {
+			if (url) router.push(url);
+			else throw new Error('Unable to retrieve payment URL');
+		},
+		onError: () => {
+			toast({
+				title: 'Something went wrong',
+				description: 'There was an error on our end. Please try again.',
+				variant: 'destructive',
+			});
+		},
+	});
 
 	function handleCheckout(): void {
 		throw new Error('Function not implemented.');
@@ -108,10 +129,12 @@ export default function DesignPreview({ configuration }: { configuration: Config
 
 							<div className='mt-8 flex justify-end pb-12'>
 								<Button
-									disabled={true}
-									isLoading={true}
-									loadingText='loading'
-									onClick={() => handleCheckout()}
+									// disabled={true}
+									// isLoading={true}
+									// loadingText='loading'
+									onClick={() =>
+										createPaymentSession({ configId: configuration.id })
+									}
 									className='px-4 sm:px-6 lg:px-8'
 								>
 									Check out <ArrowRight className='h-4 w-4 ml-1.5 inline' />
