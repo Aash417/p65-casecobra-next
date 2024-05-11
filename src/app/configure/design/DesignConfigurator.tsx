@@ -17,10 +17,13 @@ import { useUploadThing } from '@/lib/uploadthing';
 import { cn, formatPrice } from '@/lib/utils';
 import { COLORS, FINISHES, MATERIALS, MODELS } from '@/validators/option-validator';
 import { Description, RadioGroup } from '@headlessui/react';
+import { useMutation } from '@tanstack/react-query';
 import { ArrowRight, Check, ChevronsUpDown } from 'lucide-react';
 import NextImage from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { Rnd } from 'react-rnd';
+import { SaveConfigArgs, saveConfig as _saveConfig } from './actions';
 
 interface DesignConfiguratorProps {
 	configId: string;
@@ -33,6 +36,24 @@ export default function DesignConfigurator({
 	imageUrl,
 	imageDimensions,
 }: DesignConfiguratorProps) {
+	const { mutate: saveConfig } = useMutation({
+		mutationKey: ['saveConfig'],
+		mutationFn: async (args: SaveConfigArgs) => {
+			await Promise.all([saveConfiguration(), _saveConfig(args)]);
+		},
+		onError: () => {
+			toast({
+				title: 'Something went wrong',
+				description: 'There was an error on our end. Please try again.',
+				variant: 'destructive',
+			});
+		},
+		onSuccess: () => {
+			router.push(`/configure/perview?id=${configId}`);
+		},
+	});
+	const router = useRouter();
+
 	const [options, setOptions] = useState<{
 		color: (typeof COLORS)[number];
 		model: (typeof MODELS.options)[number];
@@ -349,7 +370,15 @@ export default function DesignConfigurator({
 							<Button
 								size='sm'
 								className='w-full'
-								onClick={() => saveConfiguration()}
+								onClick={() =>
+									saveConfig({
+										configId,
+										color: options.color.value,
+										finish: options.finish.value,
+										material: options.material.value,
+										model: options.model.value,
+									})
+								}
 							>
 								Continue
 								<ArrowRight className='h-4 w-4 ml-1.5 inline' />

@@ -1,5 +1,6 @@
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
+import Provider from '@/components/Provider';
 import { Toaster } from '@/components/ui/toaster';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -22,7 +23,9 @@ export default function RootLayout({
 			<body className={inter.className}>
 				<Navbar />
 				<main className='flex flex-col min-h-[calc(100vh-3.5rem-1px)]'>
-					<div className='flex-1 flex flex-col h-full'>{children}</div>
+					<div className='flex-1 flex flex-col h-full'>
+						<Provider>{children}</Provider>
+					</div>
 					<Footer />
 				</main>
 				<Toaster />
