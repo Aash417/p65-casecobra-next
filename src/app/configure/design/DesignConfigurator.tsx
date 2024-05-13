@@ -36,7 +36,7 @@ export default function DesignConfigurator({
 	imageUrl,
 	imageDimensions,
 }: DesignConfiguratorProps) {
-	const { mutate: saveConfig } = useMutation({
+	const { mutate: saveConfig, isPending } = useMutation({
 		mutationKey: ['saveConfig'],
 		mutationFn: async (args: SaveConfigArgs) => {
 			await Promise.all([saveConfiguration(), _saveConfig(args)]);
@@ -368,6 +368,9 @@ export default function DesignConfigurator({
 								)}
 							</p>
 							<Button
+								isLoading={isPending}
+								disabled={isPending}
+								loadingText='Saving'
 								size='sm'
 								className='w-full'
 								onClick={() =>
