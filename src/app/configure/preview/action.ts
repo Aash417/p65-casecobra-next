@@ -41,26 +41,41 @@ export async function createCheckoutSession({ configId }: { configId: string }) 
 			},
 		});
 
-	const product = await stripe.products.create({
-		name: 'Custom iphone case',
-		images: [configuration.imgUrl],
-		default_price_data: {
-			currency: 'USD',
-			unit_amount: totalPrice,
-		},
-	});
+	// const product = await stripe.products.create({
+	// 	name: 'Custom iphone case',
+	// 	images: [configuration.imgUrl],
+	// 	default_price_data: {
+	// 		currency: 'INR',
+	// 		unit_amount: totalPrice,
+	// 	},
+	// });
 
 	const stripeSession = await stripe.checkout.sessions.create({
+		mode: 'payment',
+		payment_method_types: ['card'],
 		success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/thank-you?orderId=${order.id}`,
 		cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/configure/preview?orderId=${configuration.id}`,
-		payment_method_types: ['card'],
-		mode: 'payment',
+
+		customer_email: user.email,
+
 		shipping_address_collection: { allowed_countries: ['DE', 'US', 'IN'] },
 		metadata: {
 			userId: user.id,
 			orderId: order.id,
 		},
-		line_items: [{ price: product.default_price as string, quantity: 1 }],
+		line_items: [
+			{
+				price_data: {
+					unit_amount: totalPrice,
+					currency: 'INR',
+					product_data: {
+						name: 'Custom iphone case 3',
+						images: [configuration.imgUrl],
+					},
+				},
+				quantity: 1,
+			},
+		],
 	});
 	return { url: stripeSession.url };
 }

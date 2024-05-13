@@ -93,7 +93,7 @@ export default function DesignConfigurator({
 			const leftOffset = caseLeft - containerLeft;
 			const topOffset = caseTop - containerTop;
 
-			const acutalX = renderedPosition.x - leftOffset;
+			const actualX = renderedPosition.x - leftOffset;
 			const actualY = renderedPosition.y - topOffset;
 
 			const canvas = document.createElement('canvas');
@@ -108,7 +108,7 @@ export default function DesignConfigurator({
 
 			ctx?.drawImage(
 				userImage,
-				acutalX,
+				actualX,
 				actualY,
 				renderedDimension.width,
 				renderedDimension.height
