@@ -10,7 +10,7 @@ export async function getPaymentStatus({ orderId }: { orderId: string }) {
 	if (!user?.id || !user?.email) throw new Error('You need to be log in to view this page');
 
 	const order = await db.order.findFirst({
-		where: { id: orderId, userId: user.id },
+		where: { id: orderId },
 		include: {
 			billingAddress: true,
 			shippingAddress: true,

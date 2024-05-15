@@ -45,7 +45,7 @@ export default function ThankYou() {
 
 	return (
 		<div className='bg-white'>
-			<div className='mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8'>
+			<div className='mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-10 lg:px-8'>
 				<div className='max-w-xl'>
 					<p className='text-balance font-medium text-primary'>Thank you!</p>
 					<h1 className='mt-2 text-4xl font-bold tracking-tight sm:text-5xl'>
@@ -119,7 +119,7 @@ export default function ThankYou() {
 					<div className='space-y-6 border-t border-zinc-200 pt-10 text-sm'>
 						<div className='flex justify-between'>
 							<p className='font-medium text-zinc-900'>Subtotal</p>
-							<p className='text-zinc-700'>{formatPrice(amount / 100)}</p>
+							<p className='text-zinc-700'>{formatPrice(amount)}</p>
 						</div>
 						<div className='flex justify-between'>
 							<p className='font-medium text-zinc-900'>Shipping</p>
@@ -127,7 +127,7 @@ export default function ThankYou() {
 						</div>
 						<div className='flex justify-between'>
 							<p className='font-medium text-zinc-900'>Total</p>
-							<p className='text-zinc-700'>{formatPrice(amount / 100)}</p>
+							<p className='text-zinc-700'>{formatPrice(amount)}</p>
 						</div>
 					</div>
 				</div>

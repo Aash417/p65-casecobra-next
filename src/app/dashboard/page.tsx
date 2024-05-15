@@ -63,7 +63,7 @@ export default async function Page() {
 							<CardHeader className='pb-2'>
 								<CardDescription>Last week</CardDescription>
 								<CardTitle className='text-4xl'>
-									{formatPrice(lastWeekSum._sum.amount! / 100 ?? 0)}
+									{formatPrice(lastWeekSum._sum.amount! ?? 0)}
 								</CardTitle>
 							</CardHeader>
 							<CardContent>
@@ -73,9 +73,7 @@ export default async function Page() {
 							</CardContent>
 							<CardFooter>
 								<Progress
-									value={
-										((lastWeekSum._sum.amount! / 100 ?? 0) / WEEKLY_GOAL) * 100
-									}
+									value={((lastWeekSum._sum.amount! ?? 0) / WEEKLY_GOAL) * 100}
 								/>
 							</CardFooter>
 						</Card>
@@ -84,7 +82,7 @@ export default async function Page() {
 							<CardHeader className='pb-2'>
 								<CardDescription>Last month</CardDescription>
 								<CardTitle className='text-4xl'>
-									{formatPrice(lastMonthSum._sum.amount! / 100 ?? 0)}
+									{formatPrice(lastMonthSum._sum.amount! ?? 0)}
 								</CardTitle>
 							</CardHeader>
 							<CardContent>
@@ -94,10 +92,7 @@ export default async function Page() {
 							</CardContent>
 							<CardFooter>
 								<Progress
-									value={
-										((lastMonthSum._sum.amount! / 100 ?? 0) / MONTHLY_GOAL) *
-										100
-									}
+									value={((lastMonthSum._sum.amount! ?? 0) / MONTHLY_GOAL) * 100}
 								/>
 							</CardFooter>
 						</Card>
@@ -134,7 +129,7 @@ export default async function Page() {
 										{order.createdAt.toLocaleDateString()}
 									</TableCell>
 									<TableCell className='text-right'>
-										{formatPrice(order.amount / 100)}
+										{formatPrice(order.amount)}
 									</TableCell>
 								</TableRow>
 							))}
