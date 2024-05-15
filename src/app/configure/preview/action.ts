@@ -35,47 +35,34 @@ export async function createCheckoutSession({ configId }: { configId: string }) 
 	else
 		order = await db.order.create({
 			data: {
+				amount: totalPrice / 100,
 				userId: user.id,
-				amount: totalPrice,
 				configurationId: configuration.id,
 			},
 		});
 
-	// const product = await stripe.products.create({
-	// 	name: 'Custom iphone case',
-	// 	images: [configuration.imgUrl],
-	// 	default_price_data: {
-	// 		currency: 'INR',
-	// 		unit_amount: totalPrice,
-	// 	},
-	// });
+	const product = await stripe.products.create({
+		name: 'Custom iPhone Case',
+		images: [configuration.imgUrl],
+		default_price_data: {
+			currency: 'INR',
+			unit_amount: totalPrice,
+		},
+	});
 
 	const stripeSession = await stripe.checkout.sessions.create({
-		mode: 'payment',
-		payment_method_types: ['card'],
+		customer_email: user.email!,
 		success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/thank-you?orderId=${order.id}`,
-		cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/configure/preview?orderId=${configuration.id}`,
-
-		customer_email: user.email,
-
-		shipping_address_collection: { allowed_countries: ['DE', 'US', 'IN'] },
+		cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/configure/preview?id=${configuration.id}`,
+		payment_method_types: ['card'],
+		mode: 'payment',
+		shipping_address_collection: { allowed_countries: ['IN', 'US'] },
 		metadata: {
 			userId: user.id,
 			orderId: order.id,
 		},
-		line_items: [
-			{
-				price_data: {
-					unit_amount: totalPrice,
-					currency: 'INR',
-					product_data: {
-						name: 'Custom iphone case 3',
-						images: [configuration.imgUrl],
-					},
-				},
-				quantity: 1,
-			},
-		],
+		line_items: [{ price: product.default_price as string, quantity: 1 }],
 	});
+
 	return { url: stripeSession.url };
 }

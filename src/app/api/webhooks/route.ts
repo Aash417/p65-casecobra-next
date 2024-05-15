@@ -1,13 +1,13 @@
 import OrderReceivedEmail from '@/components/emails/OrderReceivedEmail';
 import { db } from '@/db';
 import { headers } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import stripe, { Stripe } from 'stripe';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
 	try {
 		const body = await req.text();
 		const signature = headers().get('stripe-signature');
@@ -30,36 +30,34 @@ export async function POST(req: Request) {
 			const shippingAddress = session.shipping_details?.address;
 
 			const updatedOrder = await db.order.update({
-				where: {
-					id: orderId,
-				},
+				where: { id: orderId },
 				data: {
 					isPaid: true,
 					shippingAddress: {
 						create: {
-							name: session.customer_details?.name!,
-							city: shippingAddress?.city!,
-							state: shippingAddress?.state,
-							country: shippingAddress?.country!,
-							postalCode: shippingAddress?.postal_code!,
-							street: shippingAddress?.line1!,
+							name: session.customer_details!.name!,
+							city: shippingAddress!.city!,
+							country: shippingAddress!.country!,
+							postalCode: shippingAddress!.postal_code!,
+							street: shippingAddress!.line1!,
+							state: shippingAddress!.state,
 						},
 					},
 					billingAddress: {
 						create: {
-							name: session.customer_details?.name!,
-							city: billingAddress?.city!,
-							state: billingAddress?.state,
-							country: billingAddress?.country!,
-							postalCode: billingAddress?.postal_code!,
-							street: billingAddress?.line1!,
+							name: session.customer_details!.name!,
+							city: billingAddress!.city!,
+							country: billingAddress!.country!,
+							postalCode: billingAddress!.postal_code!,
+							street: billingAddress!.line1!,
+							state: billingAddress!.state,
 						},
 					},
 				},
 			});
 
 			await resend.emails.send({
-				from: 'CaseCobra <extry99@gmail.com>',
+				from: 'CaseCobra <aashish@casecobra.next.dev>',
 				to: [event.data.object?.customer_details!.email],
 				subject: 'Thanks for your order',
 				react: OrderReceivedEmail({

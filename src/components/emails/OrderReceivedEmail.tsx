@@ -52,7 +52,7 @@ export default function OrderReceivedEmail({
 				</Section>{' '}
 				<Hr style={global.hr} />
 				<Section style={global.defaultPadding}>
-					<Text style={adressTitle}>Shipping to: {shippingAddress.name}</Text>
+					<Text style={addressTitle}>Shipping to: {shippingAddress.name}</Text>
 					<Text style={{ ...global.text, fontSize: 14 }}>
 						{shippingAddress.street}, {shippingAddress.city}, {shippingAddress.state}{' '}
 						{shippingAddress.postalCode}
@@ -177,7 +177,7 @@ const message = {
 	textAlign: 'center',
 } as React.CSSProperties;
 
-const adressTitle = {
+const addressTitle = {
 	...paragraph,
 	fontSize: '15px',
 	fontWeight: 'bold',
