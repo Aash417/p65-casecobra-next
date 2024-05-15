@@ -1,5 +1,6 @@
 'use client';
 
+import { getAuthStatus } from '@/app/auth-callback/action';
 import HandleComponent from '@/components/HandleComponent';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
@@ -373,15 +374,17 @@ export default function DesignConfigurator({
 								loadingText='Saving'
 								size='sm'
 								className='w-full'
-								onClick={() =>
+								onClick={() => {
 									saveConfig({
 										configId,
 										color: options.color.value,
 										finish: options.finish.value,
 										material: options.material.value,
 										model: options.model.value,
-									})
-								}
+									});
+
+									getAuthStatus();
+								}}
 							>
 								Continue
 								<ArrowRight className='h-4 w-4 ml-1.5 inline' />

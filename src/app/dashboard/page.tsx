@@ -55,8 +55,8 @@ export default async function Page() {
 	const MONTHLY_GOAL = 120_000;
 
 	return (
-		<div className='flex min-h-screen w-full bg-muted/40'>
-			<div className=' max-w-7xl w-full mx-auto flex flex-col sm:gap-4 sm:py-4'>
+		<div className='flex min-h-screen sm:pl-30 sm:pr-30 w-full bg-muted/40'>
+			<div className='max-w-7xl w-full mx-auto flex flex-col sm:gap-4 sm:py-4'>
 				<div className='flex flex-col gap-16'>
 					<div className='grid gap-4 sm:grid-cols-2'>
 						<Card>
